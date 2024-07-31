@@ -5,7 +5,7 @@ function App() {
     return (
         <Router>
             <Switch>
-                <Route path="/" component={"<h1>Hello World</h1>"} />
+                <Route path="/" render={() => <h1>Hello World</h1>}  />
             </Switch>
         </Router>
     );
