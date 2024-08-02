@@ -14,19 +14,21 @@ const Dashboard = () => {
     const [username, setUsername] = useState("User"); // Ganti dengan nama user dari konteks atau props
     const [email, setEmail] = useState('');
     const [description, setDescription] = useState('');
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
-        // Mengambil nama pengguna dari backend setelah login
-        const fetchUserData = async () => {
+        // Mengambil nama pengguna dari access token setelah login
+        const token = localStorage.getItem('accessToken');
+        if (token) {
             try {
-                const response = await axios.get('/users/me');
-                setUsername(response.data.username);
+                const decoded = JSON.parse(atob(token.split(".")[1]));
+                setUsername(decoded.name || "User"); // Periksa nama field yang benar
+                setUserId(decoded.userId); // Asumsikan token memiliki field id
             } catch (error) {
-                console.error("Error fetching user data:", error);
+                console.error("Error decoding token:", error);
+                setUsername("User");
             }
-        };
-
-        fetchUserData();
+        }
     }, []);
 
     const handleSubmit = async (e) => {
@@ -69,8 +71,8 @@ const Dashboard = () => {
     return (
         <div className="dashboard-container">
             <div className="header">
-                {username}
-                <div >
+                <p className='mr-3'>{username}</p>
+                <div>
                     <button onClick={handleLogout}>Logout</button>
                 </div>
             </div>
@@ -122,5 +124,10 @@ const customStyles = {
         margin: 'auto',
     },
 };
+const mr_3 = {
+    content:{
+        margin_right:'3px',
+    }
+}
 
 export default withAuth(Dashboard);
