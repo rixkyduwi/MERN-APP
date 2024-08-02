@@ -4,7 +4,6 @@ import 'react-calendar/dist/Calendar.css';
 import '../dist/css/Dashboard.css'; // Buat file CSS untuk styling jika diperlukan
 import Modal from 'react-modal';
 import withAuth from "../hoc/withAuth";
-import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 Modal.setAppElement('#root'); // Tentukan elemen utama untuk modal
 
@@ -17,12 +16,17 @@ const Dashboard = () => {
     const [description, setDescription] = useState('');
 
     useEffect(() => {
-        // Mengambil nama pengguna dari access token setelah login
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            const decoded = jwt_decode(token);
-            setUsername(decoded.username); // Asumsikan token memiliki field username
-        }
+        // Mengambil nama pengguna dari backend setelah login
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get('/users/me');
+                setUsername(response.data.username);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchUserData();
     }, []);
 
     const handleSubmit = async (e) => {
@@ -37,9 +41,15 @@ const Dashboard = () => {
             console.error("Error creating data:", error);
         }
     };
+
     const handleDateClick = date => {
         setDate(date);
         setModalIsOpen(true);
+    };
+
+    const handleDateChange = (e) => {
+        // Mengubah format date dari input string ke Date object
+        setDate(new Date(e.target.value));
     };
 
     const handleEventDetailsChange = (e) => {
@@ -56,12 +66,6 @@ const Dashboard = () => {
         }
     };
 
-    const handleAddEvent = () => {
-        // Tambahkan logika untuk menambahkan acara di sini
-        console.log("Event added:", eventDetails);
-        setModalIsOpen(false);
-    };
-
     return (
         <div className="dashboard-container">
             <div className="header">
@@ -71,7 +75,7 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="calendar-container">
-                <Calendar onClickDay={handleDateClick} />
+                <Calendar onClickDay={handleDateClick} value={date} />
             </div>
             <Modal
                 isOpen={modalIsOpen}
@@ -91,8 +95,8 @@ const Dashboard = () => {
                         <label>Date</label>
                         <input
                             type="date"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
+                            value={date.toISOString().substring(0, 10)} // Format date to YYYY-MM-DD
+                            onChange={handleDateChange}
                         />
                     </div>
                     <div>
@@ -108,6 +112,7 @@ const Dashboard = () => {
         </div>
     );
 };
+
 const customStyles = {
     content: {
         border: '2px solid black',
@@ -117,4 +122,5 @@ const customStyles = {
         margin: 'auto',
     },
 };
+
 export default withAuth(Dashboard);

@@ -65,27 +65,3 @@ Jalankan aplikasi React:
 npm start
 ```
 Aplikasi akan berjalan di http://localhost:3000.
-## Struktur Direktori
-mern-app/
-├── backend/
-│   ├── models/
-│   │   └── Data.js
-│   ├── routes/
-│   │   └── data.js
-│   ├── middleware/
-│   │   └── auth.js
-│   ├── server.js
-│   └── config.js
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Login.js
-│   │   │   ├── Register.js
-│   │   │   └── Dashboard.js
-│   │   ├── App.js
-│   │   ├── index.js
-│   │   └── setupProxy.js
-├── .gitignore
-├── README.md
-└── package.json

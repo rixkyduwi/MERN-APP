@@ -6,13 +6,13 @@ import { verifyToken, authorizeRole } from '../middleware/VerifyToken.js';
 const router = express.Router();
 
 // Route user
-router.get("/users", getUsers);
+router.get("/users",verifyToken, getUsers);
 router.post("/users", Register);
-router.put("/user/:id", updateUser);
-router.delete("/user/:id", deleteUser);
+router.put("/user/:id",verifyToken, updateUser);
+router.delete("/user/:id", verifyToken, deleteUser);
 router.post("/login", Login);
 // router.get("/token", refreshToken);
-router.delete("/logout", Logout);
+router.delete("/logout", verifyToken, Logout);
 
 // Middleware to verify token for all /data routes
 router.use('/data', verifyToken);
